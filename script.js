@@ -1,10 +1,21 @@
-const count = 1000;
-const apiKey = "o97mXHcQjFaPHrxZiuecI1u67gJhEcQoV6Lxm5wQVbQ";
+const count = 30;
+const apiKey = "M49-n1NBlXzJRzVsDC7MK5nob_nJqVaM8u8BrAmjOo0";
 const apiUrl = `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=${count}`;
 
 const imageContainer = document.getElementById("image-container");
 const loader = document.getElementById("loader");
-
+let imagesLoaded = 0;
+let ready = false;
+let totalImages = 0;
+// image loader function
+function imageLoaded() {
+  console.log("image loaded");
+  imagesLoaded++;
+  console.log("images loaded: ", imagesLoaded);
+  if (imagesLoaded === totalImages) {
+    ready = true;
+  }
+}
 let photosArray = [];
 // helper function to set attributes
 function setAttributes(element, attributes) {
@@ -15,6 +26,7 @@ function setAttributes(element, attributes) {
 
 // create elements for img, link and add to the dom
 function displayPhotos() {
+  totalImages = photosArray.length;
   // create <a> </a> and link to unsplash
   photosArray.forEach((photo) => {
     const item = document.createElement("a");
@@ -22,7 +34,7 @@ function displayPhotos() {
     // item.setAttribute("target", "_blank");
     setAttributes(item, {
       href: photo.links.html,
-      targer: "_blank",
+      target: "_blank",
     });
     // create <img> for photo
     const img = document.createElement("img");
@@ -34,6 +46,9 @@ function displayPhotos() {
       alt: photo.alt_description,
       titile: photo.alt_description,
     });
+
+    // check if an image has been loaded
+    img.addEventListener("load", imageLoaded);
     // put <img> inside <a> and put both inside the image-container
 
     item.appendChild(img);
@@ -52,4 +67,15 @@ async function getPhotos() {
   }
 }
 
+//check to see if scrolling near bottom of page, load more images
+window.addEventListener("scroll", () => {
+  if (
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 &&
+    ready
+  ) {
+    ready = false;
+    imagesLoaded = 0;
+    getPhotos();
+  }
+});
 getPhotos();
