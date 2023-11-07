@@ -9,10 +9,9 @@ let ready = false;
 let totalImages = 0;
 // image loader function
 function imageLoaded() {
-  console.log("image loaded");
   imagesLoaded++;
-  console.log("images loaded: ", imagesLoaded);
   if (imagesLoaded === totalImages) {
+    loader.hidden = true;
     ready = true;
   }
 }
@@ -44,7 +43,7 @@ function displayPhotos() {
     setAttributes(img, {
       src: photo.urls.regular,
       alt: photo.alt_description,
-      titile: photo.alt_description,
+      title: photo.alt_description,
     });
 
     // check if an image has been loaded
